@@ -1,0 +1,4 @@
+torch==2.5.1
+tokenizers==0.20.2
+datasets==3.1.0
+trl==0.12.0
