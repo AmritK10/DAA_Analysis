@@ -27,6 +27,7 @@ python dpo.py \
     --output_dir Qwen2-0.5B-DPO \
     --no_remove_unused_columns
 
+# USE THIS
 # LoRA:
 python dpo.py \
     --dataset_name trl-internal-testing/hh-rlhf-trl-style \
@@ -36,17 +37,19 @@ python dpo.py \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 8 \
     --gradient_checkpointing \
-    --logging_steps 25 \
+    --logging_steps 10 \
     --eval_strategy steps \
-    --eval_steps 50 \
+    --eval_steps 20 \
     --output_dir Qwen2-0.5B-DPO \
     --no_remove_unused_columns \
     --use_peft \
     --lora_r 32 \
-    --lora_alpha 16
+    --lora_alpha 16 \
+    --report_to wandb
 """
 
 import torch
+import wandb
 from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -66,6 +69,7 @@ from trl.trainer.utils import SIMPLE_CHAT_TEMPLATE
 if __name__ == "__main__":
     parser = TrlParser((ScriptArguments, DPOConfig, ModelConfig))
     script_args, training_args, model_config = parser.parse_args_and_config()
+    wandb.init(project='DAA_Analysis', name=f'{model_config.model_name_or_path}', group=f'DPO',)
 
     ################
     # Model & Tokenizer
@@ -120,8 +124,8 @@ if __name__ == "__main__":
         model,
         ref_model,
         args=training_args,
-        train_dataset=dataset[script_args.dataset_train_split].select(range(500)),
-        eval_dataset=dataset[script_args.dataset_test_split].select(range(50)) if training_args.eval_strategy != "no" else None,
+        train_dataset=dataset[script_args.dataset_train_split].select(range(5000)),
+        eval_dataset=dataset[script_args.dataset_test_split].select(range(500)) if training_args.eval_strategy != "no" else None,
         processing_class=tokenizer,
         peft_config=peft_config,
     )
@@ -137,3 +141,5 @@ if __name__ == "__main__":
     trainer.save_model(training_args.output_dir)
     if training_args.push_to_hub:
         trainer.push_to_hub(dataset_name=script_args.dataset_name)
+
+    wandb.finish()
