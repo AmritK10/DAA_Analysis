@@ -63,13 +63,6 @@ python dpo.py \
     --report_to wandb
     --push_to_hub
 ```
-Command to compute the Gemini Win Rates for the policy aligned using the DPO algorithm:
-```
-python3 eval.py \
-  --dataset_name DATASET_NAME \
-  --model_name MODEL_NAME \
-  --lora_path LORA_PATH
-```
 
 ### KTO
 
@@ -77,3 +70,18 @@ python3 eval.py \
 
 ### SimPO
 
+### Win Rate Calculation
+We use the Gemini-1.5-Flash model as the Judge to compute the win rates.
+
+1. Add your GOOGLE_API_KEY to the environment as we use Gemini Free API to score the responses using the LLM as a judge paradigm
+```
+export GOOGLE_API_KEY=''
+```
+2.
+Run Command to compute the Gemini Win Rates for the policy aligned using your algorithm:
+```
+python3 eval.py \
+  --dataset_name DATASET_NAME \
+  --model_name MODEL_NAME \
+  --lora_path LORA_PATH
+```
