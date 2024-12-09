@@ -1,0 +1,69 @@
+{
+  "os": "macOS-15.1-arm64-arm-64bit",
+  "python": "3.11.7",
+  "startedAt": "2024-11-07T23:14:40.450882Z",
+  "args": [
+    "--dataset_name",
+    "trl-internal-testing/hh-rlhf-trl-style",
+    "--model_name_or_path",
+    "Qwen/Qwen2-0.5B-Instruct",
+    "--learning_rate",
+    "5.0e-7",
+    "--num_train_epochs",
+    "1",
+    "--per_device_train_batch_size",
+    "2",
+    "--gradient_accumulation_steps",
+    "8",
+    "--gradient_checkpointing",
+    "--logging_steps",
+    "10",
+    "--eval_strategy",
+    "steps",
+    "--eval_steps",
+    "20",
+    "--output_dir",
+    "Qwen2-0.5B-SIMPO-Full",
+    "--no_remove_unused_columns",
+    "--report_to",
+    "wandb",
+    "--loss_type",
+    "simpo",
+    "--cpo_alpha",
+    "0"
+  ],
+  "program": "/Users/kaushikarcot/Documents/GT/sem 3/DeepRL/Project/DAA_Analysis/simpo.py",
+  "codePath": "simpo.py",
+  "git": {
+    "remote": "https://github.com/AmritK10/DAA_Analysis.git",
+    "commit": "ffa04115e4a23f068026880d9ef61eaa8700bd32"
+  },
+  "email": "kaushikarcot5@gmail.com",
+  "root": "/Users/kaushikarcot/Documents/GT/sem 3/DeepRL/Project/DAA_Analysis",
+  "host": "Kaushiks-MacBook-Pro.local",
+  "username": "kaushikarcot",
+  "executable": "/Users/kaushikarcot/anaconda3/bin/python",
+  "codePathLocal": "simpo.py",
+  "cpu_count": 8,
+  "cpu_count_logical": 8,
+  "disk": {
+    "/": {
+      "total": "494384795648",
+      "used": "268981223424"
+    }
+  },
+  "memory": {
+    "total": "8589934592"
+  },
+  "cpu": {
+    "count": 8,
+    "countLogical": 8
+  },
+  "apple": {
+    "name": "Apple M1",
+    "ecpuCores": 4,
+    "pcpuCores": 4,
+    "gpuCores": 8,
+    "memoryGb": 8
+  }
+}
