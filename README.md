@@ -69,16 +69,19 @@ python dpo.py \
 python kto.py \
     --dataset_name DATASET_NAME \
     --model_name_or_path MODEL_NAME \
-    --learning_rate 5.0e-6 \
+    --learning_rate 5e-7 \
+    --lr_scheduler_type=cosine \
     --num_train_epochs 1 \
     --per_device_train_batch_size 2 \
-    --gradient_accumulation_steps 8 \
+    --gradient_accumulation_steps 1 \
     --gradient_checkpointing \
     --logging_steps 10 \
     --eval_strategy steps \
-    --eval_steps 20 \
+    --eval_steps 500 \
     --output_dir outputs \
+    --warmup_ratio 0.1 \
     --no_remove_unused_columns \
+    --bf16 \
     --use_peft \
     --lora_r 32 \
     --lora_alpha 16 \
