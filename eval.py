@@ -144,7 +144,7 @@ class AlignmentEvaluator:
 def main():
     set_seed(0)
     evaluator = AlignmentEvaluator()
-    evaluator.run_evaluation(num_eval=10)
+    evaluator.run_evaluation(num_eval=1000)
 
 
 if __name__ == "__main__":
