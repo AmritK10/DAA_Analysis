@@ -60,7 +60,7 @@ class GeminiEvaluator():
         
         evaluation = self.evaluator.invoke(prompt).content
 
-        print(f"Eval: {evaluation}")
+        # print(f"Eval: {evaluation}")
         
         # Extract the numerical score from the evaluation
         score_line = evaluation.split('\n')[-1].strip()
@@ -119,8 +119,8 @@ class AlignmentEvaluator:
 
             prompts.append(prompt)
 
-            print(f'prompt: {prompt}')
-            print(f'chosen: {chosen}')
+            # print(f'prompt: {prompt}')
+            # print(f'chosen: {chosen}')
 
             encoded_prompt = self.tokenizer.apply_chat_template(prompt, return_tensors="pt")
             encoded_prompt = encoded_prompt.to(self.model.device)
@@ -128,7 +128,7 @@ class AlignmentEvaluator:
             with torch.no_grad():
                 outputs = self.model.generate(encoded_prompt, max_new_tokens=300,)
             generated_text = self.tokenizer.decode(outputs[0][encoded_prompt.shape[-1]:], skip_special_tokens=True)
-            print(f"generated_text: {generated_text}")
+            # print(f"generated_text: {generated_text}")
 
             try:
                 win = self.evaluator.evaluate_response(prompt, chosen, generated_text)
