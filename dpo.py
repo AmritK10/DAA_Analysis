@@ -30,7 +30,7 @@ python dpo.py \
 # USE THIS
 # LoRA:
 python dpo.py \
-    --dataset_name trl-internal-testing/hh-rlhf-trl-style \
+    --dataset_name trl-internal-testing/tldr-preference-trl-style \
     --model_name_or_path Qwen/Qwen2-0.5B-Instruct \
     --learning_rate 5.0e-6 \
     --num_train_epochs 1 \
@@ -46,6 +46,26 @@ python dpo.py \
     --lora_r 32 \
     --lora_alpha 16 \
     --report_to wandb
+    --push_to_hub
+
+python dpo.py \
+    --dataset_name trl-internal-testing/tldr-preference-trl-style \
+    --model_name_or_path EleutherAI/pythia-2.8b \
+    --learning_rate 5.0e-6 \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 8 \
+    --gradient_checkpointing \
+    --logging_steps 10 \
+    --eval_strategy steps \
+    --eval_steps 20 \
+    --output_dir pythia-2.8b \
+    --no_remove_unused_columns \
+    --use_peft \
+    --lora_r 32 \
+    --lora_alpha 16 \
+    --report_to wandb
+    --push_to_hub
 """
 
 import torch
@@ -69,7 +89,7 @@ from trl.trainer.utils import SIMPLE_CHAT_TEMPLATE
 if __name__ == "__main__":
     parser = TrlParser((ScriptArguments, DPOConfig, ModelConfig))
     script_args, training_args, model_config = parser.parse_args_and_config()
-    wandb.init(project='DAA_Analysis', name=f'{model_config.model_name_or_path}', group=f'DPO',)
+    wandb.init(project='DAA_Analysis', name=f'{model_config.model_name_or_path}_{script_args.dataset_name}', group=f'DPO',)
 
     ################
     # Model & Tokenizer
@@ -120,12 +140,18 @@ if __name__ == "__main__":
     ##########
     # Training
     ################
+
+    test_key = 'test'
+    if script_args.dataset_name == 'trl-internal-testing/tldr-preference-trl-style':
+        test_key = 'validation'
+
     trainer = DPOTrainer(
         model,
         ref_model,
         args=training_args,
-        train_dataset=dataset[script_args.dataset_train_split].select(range(5000)),
-        eval_dataset=dataset[script_args.dataset_test_split].select(range(500)) if training_args.eval_strategy != "no" else None,
+        train_dataset=dataset[script_args.dataset_train_split].select(range(10000)),
+        # eval_dataset=dataset[script_args.dataset_test_split].select(range(1000)) if training_args.eval_strategy != "no" else None,
+        eval_dataset=dataset[test_key].select(range(1000)) if training_args.eval_strategy != "no" else None,
         processing_class=tokenizer,
         peft_config=peft_config,
     )
