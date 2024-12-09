@@ -1,73 +1,3 @@
-# Copyright 2023 The HuggingFace Inc. team. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""
-# Full training
-python dpo.py \
-    --dataset_name trl-internal-testing/hh-rlhf-trl-style \
-    --model_name_or_path Qwen/Qwen2-0.5B-Instruct \
-    --learning_rate 5.0e-7 \
-    --num_train_epochs 1 \
-    --per_device_train_batch_size 2 \
-    --gradient_accumulation_steps 8 \
-    --gradient_checkpointing \
-    --logging_steps 25 \
-    --eval_strategy steps \
-    --eval_steps 50 \
-    --output_dir Qwen2-0.5B-DPO \
-    --no_remove_unused_columns
-
-# USE THIS
-# LoRA:
-python dpo.py \
-    --dataset_name trl-internal-testing/tldr-preference-trl-style \
-    --model_name_or_path Qwen/Qwen2-0.5B-Instruct \
-    --learning_rate 5.0e-6 \
-    --num_train_epochs 1 \
-    --per_device_train_batch_size 2 \
-    --gradient_accumulation_steps 8 \
-    --gradient_checkpointing \
-    --logging_steps 10 \
-    --eval_strategy steps \
-    --eval_steps 20 \
-    --output_dir Qwen2-0.5B-DPO \
-    --no_remove_unused_columns \
-    --use_peft \
-    --lora_r 32 \
-    --lora_alpha 16 \
-    --report_to wandb
-    --push_to_hub
-
-python dpo.py \
-    --dataset_name trl-internal-testing/tldr-preference-trl-style \
-    --model_name_or_path EleutherAI/pythia-2.8b \
-    --learning_rate 5.0e-6 \
-    --num_train_epochs 1 \
-    --per_device_train_batch_size 2 \
-    --gradient_accumulation_steps 8 \
-    --gradient_checkpointing \
-    --logging_steps 10 \
-    --eval_strategy steps \
-    --eval_steps 20 \
-    --output_dir pythia-2.8b \
-    --no_remove_unused_columns \
-    --use_peft \
-    --lora_r 32 \
-    --lora_alpha 16 \
-    --report_to wandb
-    --push_to_hub
-"""
-
 import torch
 import wandb
 from datasets import load_dataset
@@ -91,9 +21,6 @@ if __name__ == "__main__":
     script_args, training_args, model_config = parser.parse_args_and_config()
     wandb.init(project='DAA_Analysis', name=f'{model_config.model_name_or_path}_{script_args.dataset_name}', group=f'DPO',)
 
-    ################
-    # Model & Tokenizer
-    ###################
     torch_dtype = (
         model_config.torch_dtype
         if model_config.torch_dtype in ["auto", None]
@@ -132,14 +59,7 @@ if __name__ == "__main__":
             name for name, buffer in model.named_buffers() if buffer.dtype == torch.bool
         ]
 
-    ################
-    # Dataset
-    ################
     dataset = load_dataset(script_args.dataset_name)
-
-    ##########
-    # Training
-    ################
 
     test_key = 'test'
     if script_args.dataset_name == 'trl-internal-testing/tldr-preference-trl-style':
