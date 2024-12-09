@@ -67,6 +67,26 @@ python dpo.py \
 ### KTO
 
 ### ORPO
+```
+python orpo.py \
+    --dataset_name DATASET_NAME \
+    --model_name_or_path MODEL_NAME \
+    --learning_rate 5.0e-6 \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 8 \
+    --gradient_checkpointing \
+    --logging_steps 10 \
+    --eval_strategy steps \
+    --eval_steps 20 \
+    --output_dir outputs \
+    --no_remove_unused_columns \
+    --use_peft \
+    --lora_r 32 \
+    --lora_alpha 16 \
+    --report_to wandb
+    --push_to_hub
+```
 
 ### SimPO
 
